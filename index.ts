@@ -25,9 +25,13 @@ async function main() {
     entryPoint: entryPointAddress,
   });
 
+  const ABI = ["function setX(uint)"];
+  const iface = new ethers.utils.Interface(ABI);
+  const dataCall = iface.encodeFunctionData("setX", [process.env.NEW_X || "99"]);
+
   const result = await client.sendUserOperation(
-    // calling setX(uint) method of 0x428Df753DEdffD0330c1a18bFe8262c6146d2614 smart contract with parameter 6
-    smartAccount.execute("0x428Df753DEdffD0330c1a18bFe8262c6146d2614", 0, "0x4018d9aa0000000000000000000000000000000000000000000000000000000000000006")
+    // calling setX(uint) method of 0x428Df753DEdffD0330c1a18bFe8262c6146d2614 smart contract with parameter NEW_X
+    smartAccount.execute("0x428Df753DEdffD0330c1a18bFe8262c6146d2614", 0, dataCall)
   );
 
   const event = await result.wait();
